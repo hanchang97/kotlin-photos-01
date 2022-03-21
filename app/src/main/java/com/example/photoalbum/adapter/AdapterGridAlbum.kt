@@ -30,4 +30,5 @@ class AdapterGridAlbum : ListAdapter<AlbumRectangle, AdapterGridAlbum.MyViewHold
         holder.bind(getItem(position))
     }
 
+
 }
