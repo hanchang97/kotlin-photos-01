@@ -2,17 +2,16 @@ package com.example.photoalbum
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.photoalbum.adapter.AdapterGridAlbum
 import com.example.photoalbum.data.AlbumRectangle
 import com.example.photoalbum.databinding.FragmentRecyclerBinding
+import com.example.photoalbum.decoration.RecyclerDecoration
 
 class RecyclerFragment : Fragment() {
 
@@ -44,7 +43,7 @@ class RecyclerFragment : Fragment() {
         binding.rvGridAlbum.adapter = adapterGridAlbum
         binding.rvGridAlbum.layoutManager = GridLayoutManager(context, 4)
         adapterGridAlbum.submitList(createAlbumRectangle())
-
+        binding.rvGridAlbum.addItemDecoration(RecyclerDecoration(30, 50, 0, 20))
     }
 
     fun createAlbumRectangle(): List<AlbumRectangle> {
