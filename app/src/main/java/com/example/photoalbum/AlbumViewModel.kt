@@ -7,8 +7,6 @@ import com.example.photoalbum.data.AlbumRectangle
 
 class AlbumViewModel : ViewModel() {
 
-    var selectedIndex: Int = -1
-
     var gridList = MutableLiveData<List<AlbumRectangle>>()
 
     fun initList(){
@@ -23,9 +21,4 @@ class AlbumViewModel : ViewModel() {
         return albumRectangleList
     }
 
-    fun setBitmap(bitmap: Bitmap) {
-        if(selectedIndex != -1) {
-            gridList.value?.get(selectedIndex)?.bitmap = bitmap
-        }
-    }
 }
