@@ -17,6 +17,7 @@ class RecyclerFragment : Fragment() {
 
     private lateinit var binding: FragmentRecyclerBinding
     private lateinit var adapterGridAlbum: AdapterGridAlbum
+    private lateinit var gridList: List<AlbumRectangle>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +33,7 @@ class RecyclerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val gridList = createAlbumRectangle()
+        gridList = createAlbumRectangle()
         Log.d("AppTest", gridList.toString())
 
         setRecyclerView()
@@ -42,7 +43,7 @@ class RecyclerFragment : Fragment() {
         adapterGridAlbum = AdapterGridAlbum()
         binding.rvGridAlbum.adapter = adapterGridAlbum
         binding.rvGridAlbum.layoutManager = GridLayoutManager(context, 4)
-        adapterGridAlbum.submitList(createAlbumRectangle())
+        adapterGridAlbum.submitList(gridList)
         binding.rvGridAlbum.addItemDecoration(RecyclerDecoration(30, 50, 0, 20))
     }
 
