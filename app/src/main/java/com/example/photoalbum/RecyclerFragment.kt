@@ -18,7 +18,6 @@ class RecyclerFragment : Fragment() {
 
     private lateinit var binding: FragmentRecyclerBinding
     private lateinit var adapterGridAlbum: AdapterGridAlbum
-    private lateinit var gridList: List<AlbumRectangle>
 
     private val viewModel: AlbumViewModel by activityViewModels()
 
@@ -46,11 +45,12 @@ class RecyclerFragment : Fragment() {
         }
     }
 
-    fun setRecyclerView() {
+    private fun setRecyclerView() {
         adapterGridAlbum = AdapterGridAlbum {
             // 앨범 오픈 프래그먼트로 이동하기를 여기서
             // viewModel 에 albumRectangle 에  리사이클러뷰에서 선택한 AlbumRectangle을 할당
             // 앨범오픈 프래그먼트에서는 이 뷰모델의 albumRectangle에 bitmap 을 넣어준다
+            viewModel.selectedIndex = it
             (activity as MainActivity).moveToOpenAlbumFragment()
         }
         binding.rvGridAlbum.adapter = adapterGridAlbum

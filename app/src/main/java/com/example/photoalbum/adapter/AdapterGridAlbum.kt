@@ -1,19 +1,17 @@
 package com.example.photoalbum.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.photoalbum.MainActivity
 import com.example.photoalbum.R
 import com.example.photoalbum.data.AlbumRectangle
 import com.example.photoalbum.databinding.ItemGridAlbumBinding
 import com.example.photoalbum.util.MyDiffCallBack
 
 class AdapterGridAlbum(
-    val selectItem: (albumRectangle: AlbumRectangle) -> Unit
+    private val selectItem: (Int) -> Unit
 ) : ListAdapter<AlbumRectangle, AdapterGridAlbum.MyViewHolder>(MyDiffCallBack) {
 
     class MyViewHolder(val binding: ItemGridAlbumBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -35,7 +33,7 @@ class AdapterGridAlbum(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(getItem(position))
         holder.binding.root.setOnClickListener {
-            selectItem.invoke(getItem(position))
+            selectItem.invoke(position)
         }
     }
 
