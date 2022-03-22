@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.photoalbum.adapter.AdapterGridAlbum
 import com.example.photoalbum.data.AlbumRectangle
@@ -18,6 +19,8 @@ class RecyclerFragment : Fragment() {
     private lateinit var binding: FragmentRecyclerBinding
     private lateinit var adapterGridAlbum: AdapterGridAlbum
     private lateinit var gridList: List<AlbumRectangle>
+
+    private val viewModel: AlbumViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,10 +36,14 @@ class RecyclerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        gridList = createAlbumRectangle()
-        Log.d("AppTest", gridList.toString())
+
+       // Log.d("AppTest", gridList.toString())
 
         setRecyclerView()
+
+        viewModel.gridList.observe(viewLifecycleOwner) {
+            adapterGridAlbum.submitList(it)
+        }
     }
 
     fun setRecyclerView() {
@@ -48,15 +55,9 @@ class RecyclerFragment : Fragment() {
         }
         binding.rvGridAlbum.adapter = adapterGridAlbum
         binding.rvGridAlbum.layoutManager = GridLayoutManager(context, 4)
-        adapterGridAlbum.submitList(gridList)
+        //adapterGridAlbum.submitList(gridList)
         binding.rvGridAlbum.addItemDecoration(RecyclerDecoration(30, 50, 0, 20))
     }
 
-    fun createAlbumRectangle(): List<AlbumRectangle> {
-        val albumRectangleList = mutableListOf<AlbumRectangle>()
-        for (i in 0 until 40) {
-            albumRectangleList.add(AlbumRectangle(i))
-        }
-        return albumRectangleList
-    }
+
 }
