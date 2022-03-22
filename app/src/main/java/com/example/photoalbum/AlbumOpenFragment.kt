@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.photoalbum.databinding.FragmentAlbumOpenBinding
 
 class AlbumOpenFragment : Fragment() {
 
     private lateinit var binding: FragmentAlbumOpenBinding
+
+    private val viewModel: AlbumViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
