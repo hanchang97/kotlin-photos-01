@@ -40,12 +40,11 @@ class RecyclerFragment : Fragment() {
     }
 
     fun setRecyclerView() {
-        adapterGridAlbum = AdapterGridAlbum{
+        adapterGridAlbum = AdapterGridAlbum {
             // 앨범 오픈 프래그먼트로 이동하기를 여기서
             // viewModel 에 albumRectangle 에  리사이클러뷰에서 선택한 AlbumRectangle을 할당
             // 앨범오픈 프래그먼트에서는 이 뷰모델의 albumRectangle에 bitmap 을 넣어준다
-
-
+            (activity as MainActivity).moveToOpenAlbumFragment()
         }
         binding.rvGridAlbum.adapter = adapterGridAlbum
         binding.rvGridAlbum.layoutManager = GridLayoutManager(context, 4)

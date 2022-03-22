@@ -8,7 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.photoalbum.databinding.FragmentAlbumOpenBinding
 
-class AlbumOpenFragment: Fragment() {
+class AlbumOpenFragment : Fragment() {
 
     private lateinit var binding: FragmentAlbumOpenBinding
 
