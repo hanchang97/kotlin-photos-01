@@ -10,9 +10,7 @@ import com.example.photoalbum.data.AlbumRectangle
 import com.example.photoalbum.databinding.ItemGridAlbumBinding
 import com.example.photoalbum.util.MyDiffCallBack
 
-class AdapterGridAlbum(
-    private val selectItem: (Int) -> Unit
-) : ListAdapter<AlbumRectangle, AdapterGridAlbum.MyViewHolder>(MyDiffCallBack) {
+class AdapterGridAlbum() : ListAdapter<AlbumRectangle, AdapterGridAlbum.MyViewHolder>(MyDiffCallBack) {
 
     class MyViewHolder(val binding: ItemGridAlbumBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -32,9 +30,6 @@ class AdapterGridAlbum(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(getItem(position))
-        holder.binding.root.setOnClickListener {
-            selectItem.invoke(position)
-        }
     }
 
 
