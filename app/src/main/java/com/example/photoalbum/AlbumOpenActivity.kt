@@ -5,15 +5,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.TextUtils
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.scale
@@ -70,11 +68,14 @@ class AlbumOpenActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d("AppTest", "권한 승인")
                     Snackbar.make(binding.root, "권한이 승인되었습니다", Snackbar.LENGTH_SHORT).show()
-                    val images = imagesLoad()
+
+                    val imageList = imagesLoad()
                     val bitmaps = mutableListOf<Bitmap>()
-                    images.forEach { image -> bitmaps.add(uriToBitmap(image)) }
+                    imageList.forEach { image -> bitmaps.add(uriToBitmap(image)) }
                     bitmaps.forEach { bitmap ->  bitmap.scale(100, 100) }
                     Log.d("AppTest", bitmaps.toString())
+
+                    startActivity(Intent(this, ShowImageActivity::class.java))
 
                 } else {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE
@@ -100,32 +101,33 @@ class AlbumOpenActivity : AppCompatActivity() {
     }
 
     private fun imagesLoad() : List<String> {
-        val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            contentResolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                null,
-                null,
-                null
-            )
-        } else {
-            TODO("VERSION.SDK_INT < O")
-        }
+        val fileList = ArrayList<String>()
+        val uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME)
 
-        val uriArr = ArrayList<String>()
+        val cursor = contentResolver.query(uri, projection, null, null, MediaStore.MediaColumns.DATE_ADDED + " desc")
 
-        if(cursor != null){
-            Log.d("AppTest", "check")
-            while (cursor.moveToNext()){
-                val uri = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
-                uriArr.add(uri)
+        val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+        val columnDisplayName = cursor?.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
+        var lastIndex = 0
+
+        while(cursor!!.moveToNext()){
+            Log.d("AppTest", "cursor")
+            var absolutePathOfImage = cursor.getString(columnIndex!!)
+            var nameOfFile = cursor.getString(columnDisplayName!!)
+
+            lastIndex = absolutePathOfImage.lastIndexOf(nameOfFile)
+            if(lastIndex >= 0)
+            else lastIndex = nameOfFile.length - 1
+
+            if(!TextUtils.isEmpty(absolutePathOfImage)){
+                fileList.add(absolutePathOfImage)
+                Log.d("AppTest", "isEmpty")
             }
-            Log.d("AppTest", "uriArr : $uriArr")
-            cursor.close()
-            return uriArr
-        }else{
-            Log.d("AppTest", "cursor null")
         }
-        return uriArr
+
+        Log.d("AppTest", "image List : ${fileList}")
+        return fileList
     }
 
     private fun uriToBitmap(image: String) : Bitmap {
