@@ -24,6 +24,11 @@ class AdapterShowImage : ListAdapter<ShowImage, AdapterShowImage.MyViewHolder>(S
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding: ItemShowImageBinding =
             DataBindingUtil.inflate(layoutInflater, R.layout.item_show_image, parent, false)
+
+        var params = binding.root.layoutParams
+        params.width = parent.measuredWidth * 1 / 3
+        params.height = params.width
+
         return MyViewHolder(binding)
     }
 
