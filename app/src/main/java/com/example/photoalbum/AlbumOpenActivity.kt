@@ -3,6 +3,8 @@ package com.example.photoalbum
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -14,6 +16,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.scale
 import androidx.databinding.DataBindingUtil
 import com.example.photoalbum.databinding.ActivityAlbumOpenBinding
 import com.google.android.material.snackbar.Snackbar
@@ -30,31 +33,19 @@ class AlbumOpenActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_album_open)
 
-        getAlbumContent =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == RESULT_OK) {
-                    Log.d("AppTest", "RectangleActivity/ data : ${it.data?.data}")
-                    try {
-                        val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            ImageDecoder.decodeBitmap(
-                                ImageDecoder.createSource(
-                                    contentResolver,
-                                    it.data?.data!!
-                                )
-                            )
-                        } else {
-                            MediaStore.Images.Media.getBitmap(contentResolver, it.data!!.data)
-                        }
-                        //
-
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                } else {
-                    Snackbar.make(binding.root, "사진 불러오기 취소", Snackbar.LENGTH_SHORT).show()
-                }
-            }
-
+//        getAlbumContent =
+//            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+//                if (it.resultCode == RESULT_OK) {
+//                    Log.d("AppTest", "RectangleActivity/ data : ${it.data?.data}")
+//                    try {
+//
+//                    } catch (e: Exception) {
+//                        e.printStackTrace()
+//                    }
+//                } else {
+//                    Snackbar.make(binding.root, "사진 불러오기 취소", Snackbar.LENGTH_SHORT).show()
+//                }
+//            }
 
         setAlbumOpenBtn()
     }
@@ -79,10 +70,12 @@ class AlbumOpenActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d("AppTest", "권한 승인")
                     Snackbar.make(binding.root, "권한이 승인되었습니다", Snackbar.LENGTH_SHORT).show()
+                    val images = imagesLoad()
+                    val bitmaps = mutableListOf<Bitmap>()
+                    images.forEach { image -> bitmaps.add(uriToBitmap(image)) }
+                    bitmaps.forEach { bitmap ->  bitmap.scale(100, 100) }
+                    Log.d("AppTest", bitmaps.toString())
 
-                    val intent = Intent(Intent.ACTION_PICK)
-                    intent.type = "image/*"
-                    getAlbumContent.launch(Intent.createChooser(intent, "Gallery"))
                 } else {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE
                         )
@@ -104,5 +97,38 @@ class AlbumOpenActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun imagesLoad() : List<String> {
+        val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null,
+                null,
+                null
+            )
+        } else {
+            TODO("VERSION.SDK_INT < O")
+        }
+
+        val uriArr = ArrayList<String>()
+
+        if(cursor != null){
+            Log.d("AppTest", "check")
+            while (cursor.moveToNext()){
+                val uri = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+                uriArr.add(uri)
+            }
+            Log.d("AppTest", "uriArr : $uriArr")
+            cursor.close()
+            return uriArr
+        }else{
+            Log.d("AppTest", "cursor null")
+        }
+        return uriArr
+    }
+
+    private fun uriToBitmap(image: String) : Bitmap {
+        return BitmapFactory.decodeFile(image)
     }
 }
