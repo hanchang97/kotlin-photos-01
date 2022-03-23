@@ -18,6 +18,7 @@ import androidx.core.graphics.scale
 import androidx.databinding.DataBindingUtil
 import com.example.photoalbum.databinding.ActivityAlbumOpenBinding
 import com.google.android.material.snackbar.Snackbar
+import java.io.ByteArrayOutputStream
 
 class AlbumOpenActivity : AppCompatActivity() {
 
@@ -70,12 +71,13 @@ class AlbumOpenActivity : AppCompatActivity() {
                     Snackbar.make(binding.root, "권한이 승인되었습니다", Snackbar.LENGTH_SHORT).show()
 
                     val imageList = imagesLoad()
-                    val bitmaps = mutableListOf<Bitmap>()
-                    imageList.forEach { image -> bitmaps.add(uriToBitmap(image)) }
-                    bitmaps.forEach { bitmap ->  bitmap.scale(100, 100) }
-                    Log.d("AppTest", bitmaps.toString())
-
-                    startActivity(Intent(this, ShowImageActivity::class.java))
+//                    val bitmaps = arrayListOf<Bitmap>()
+//                    imageList.forEach { image -> bitmaps.add(uriToBitmap(image)) }
+//                    bitmaps.forEach { bitmap ->  bitmap.scale(100, 100) }
+//                    Log.d("AppTest", bitmaps.toString())
+                    val intent = Intent(this, ShowImageActivity::class.java)
+                    intent.putExtra("imageList", imageList)
+                    startActivity(intent)
 
                 } else {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE
@@ -100,9 +102,9 @@ class AlbumOpenActivity : AppCompatActivity() {
         }
     }
 
-    private fun imagesLoad() : List<String> {
+    private fun imagesLoad() : ArrayList<String> {
         val fileList = ArrayList<String>()
-        val uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME)
 
         val cursor = contentResolver.query(uri, projection, null, null, MediaStore.MediaColumns.DATE_ADDED + " desc")
@@ -132,5 +134,11 @@ class AlbumOpenActivity : AppCompatActivity() {
 
     private fun uriToBitmap(image: String) : Bitmap {
         return BitmapFactory.decodeFile(image)
+    }
+
+    private fun bitmapToByte(bitmap : Bitmap) : ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress( Bitmap.CompressFormat.JPEG, 100, stream)
+        return stream.toByteArray()
     }
 }

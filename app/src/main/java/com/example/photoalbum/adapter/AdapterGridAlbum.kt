@@ -10,9 +10,9 @@ import com.example.photoalbum.data.AlbumRectangle
 import com.example.photoalbum.databinding.ItemGridAlbumBinding
 import com.example.photoalbum.util.MyDiffCallBack
 
-class AdapterGridAlbum() : ListAdapter<AlbumRectangle, AdapterGridAlbum.MyViewHolder>(MyDiffCallBack) {
+class AdapterGridAlbum : ListAdapter<AlbumRectangle, AdapterGridAlbum.MyViewHolder>(MyDiffCallBack) {
 
-    class MyViewHolder(val binding: ItemGridAlbumBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MyViewHolder(private val binding: ItemGridAlbumBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(albumRectangle: AlbumRectangle) {
             binding.root.setBackgroundColor(albumRectangle.color)
