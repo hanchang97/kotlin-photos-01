@@ -1,6 +1,5 @@
 package com.example.photoalbum
 
-import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.photoalbum.data.AlbumRectangle
