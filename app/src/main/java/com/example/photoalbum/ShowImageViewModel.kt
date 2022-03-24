@@ -11,15 +11,21 @@ import org.json.JSONArray
 
 class ShowImageViewModel: ViewModel() {
 
+    private var imageList = listOf<ImageData>()
     private val _imageDataList = MutableLiveData<List<ImageData>>()
-    val imageDataList : LiveData<List<ImageData>> = _imageDataList
+    var imageDataList : LiveData<List<ImageData>> = _imageDataList
+
+    init {
+        _imageDataList.value = imageList
+    }
 
     private val showImageRepository = ShowImageRepositoryRemoteImpl()
 
     fun getImage(){
         viewModelScope.launch {
             val resultString = showImageRepository.downloadJson()
-            _imageDataList.postValue(jsonObjectList(resultString))
+            imageList = jsonObjectList(resultString)
+            _imageDataList.postValue(imageList)
         }
     }
 
@@ -33,9 +39,23 @@ class ShowImageViewModel: ViewModel() {
                     jsonObject.getString("title"),
                     jsonObject.getString("image"),
                     jsonObject.getString("date"),
+                    false,
+                    false
                 )
             )
         }
         return jsonList
+    }
+
+    fun updateCheck(selectedInx: Int){
+        var tempImageList = arrayListOf<ImageData>()
+
+        for(i in 0 until imageList.size){
+            imageList[i].checkBoxVisible = true
+            if(i == selectedInx) imageList[i].selected = true
+            tempImageList.add(imageList[i])
+        }
+
+        _imageDataList.value = tempImageList
     }
 }
