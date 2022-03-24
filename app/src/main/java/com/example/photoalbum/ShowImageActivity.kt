@@ -56,6 +56,7 @@ class ShowImageActivity : AppCompatActivity() {
         viewModel.imageDataList.observe(this){
             Log.d("AppTest", "list observe")
             adapterDoodle.submitList(it.toMutableList())
+            adapterDoodle.update()
         }
         viewModel.getImage()
 
@@ -82,9 +83,11 @@ class ShowImageActivity : AppCompatActivity() {
         adapterShowImage = AdapterShowImage()
         binding.rvShowImage.adapter = adapterShowImage
         binding.rvShowImage.layoutManager = GridLayoutManager(this, 3)
-        adapterDoodle = AdapterDoodle {
+        adapterDoodle = AdapterDoodle ({
             viewModel.updateCheck(it)
-        }
+        }, {
+            viewModel.changeCheckedState(it)
+        })
         binding.doodleShowImage.adapter = adapterDoodle
         binding.doodleShowImage.layoutManager = GridLayoutManager(this, 3)
     }

@@ -20,14 +20,14 @@
             android:contentDescription="@string/save_image"
             />
 
-        <androidx.appcompat.widget.AppCompatCheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/doodle_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:button="@drawable/doodle_check_box"
-            android:visibility="gone"
+            android:visibility="invisible"
+            android:clickable="false"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
