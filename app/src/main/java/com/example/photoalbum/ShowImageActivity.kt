@@ -5,26 +5,25 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.scale
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
 import com.example.photoalbum.adapter.AdapterDoodle
 import com.example.photoalbum.adapter.AdapterShowImage
-import com.example.photoalbum.data.Json
+import com.example.photoalbum.data.ImageData
 import com.example.photoalbum.data.ShowImage
 import com.example.photoalbum.databinding.ActivityShowImageBinding
-import com.example.photoalbum.decoration.RecyclerDecoration
 import kotlinx.coroutines.*
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.BufferedReader
-import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URL
 
 class ShowImageActivity : AppCompatActivity() {
+
+    private val viewModel : ShowImageViewModel by viewModels()
 
     private lateinit var binding: ActivityShowImageBinding
     private lateinit var adapterShowImage: AdapterShowImage
@@ -54,11 +53,10 @@ class ShowImageActivity : AppCompatActivity() {
         }
 
 
-        CoroutineScope(Job() + Dispatchers.IO).launch {
-            val jsonString = downloadJson()
-            val jsonList = jsonObjectList(jsonString)
-            adapterDoodle.submitList(jsonList)
+        viewModel.imageDataList.observe(this){
+            adapterDoodle.submitList(it)
         }
+        viewModel.getImage()
 
         binding.doodleToolBar.setNavigationOnClickListener {
             Log.d("AppTest", "setNavigationOnClickListener")
@@ -77,24 +75,6 @@ class ShowImageActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
-
-
-
-    private fun jsonObjectList(jsonString: String): List<Json> {
-        val jsonArray = JSONArray(jsonString)
-        val jsonList = mutableListOf<Json>()
-        for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            jsonList.add(
-                Json(
-                    jsonObject.getString("title"),
-                    jsonObject.getString("image"),
-                    jsonObject.getString("date"),
-                )
-            )
-        }
-        return jsonList
     }
 
     private fun setRecyclerView() {
@@ -142,22 +122,5 @@ class ShowImageActivity : AppCompatActivity() {
     private fun turnOnPhotoView() {
         binding.rvShowImage.visibility = View.VISIBLE
         binding.toolBar.visibility = View.VISIBLE
-    }
-
-    private fun downloadJson(): String {
-        val loadJson = URL("https://public.codesquad.kr/jk/doodle.json").openStream()
-        val reader = BufferedReader(InputStreamReader(loadJson, "UTF-8"))
-        val buffer = StringBuffer()
-        var whileSwitch = true
-        Log.d("AppTest", "downloading")
-        while (whileSwitch) {
-            val json = reader.readLine()
-            if (json != null) {
-                whileSwitch = false
-            }
-            buffer.append(json)
-            Log.d("AppTest", "${buffer}")
-        }
-        return """$buffer""".trimIndent()
     }
 }
