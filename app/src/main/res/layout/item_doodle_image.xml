@@ -6,8 +6,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/doodle_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:button="@drawable/doodle_check_box"
+            android:visibility="gone"
+            />
+
         <ImageView
-            android:id="@+id/iv_show_image"
+            android:id="@+id/iv_doodle_image"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="1:1"

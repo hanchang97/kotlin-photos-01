@@ -6,4 +6,7 @@
     <string name="btn_main_text">GO TO ALBUM OPEN</string>
     <string name="title_photos">Photos</string>
     <string name="save_image">save_image</string>
+    <string name="title_doodle">DOODLE</string>
+    <string name="doodle_close">닫기</string>
+    <string name="download">다운로드</string>
 </resources>
