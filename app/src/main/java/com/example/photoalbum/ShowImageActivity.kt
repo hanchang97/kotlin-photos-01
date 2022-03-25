@@ -85,6 +85,7 @@ class ShowImageActivity : AppCompatActivity() {
         binding.rvShowImage.layoutManager = GridLayoutManager(this, 3)
         adapterDoodle = AdapterDoodle ({
             viewModel.updateCheck(it)
+            binding.doodleToolBar.menu.findItem(R.id.navi_download).isVisible = true
         }, {
             viewModel.changeCheckedState(it)
         })
