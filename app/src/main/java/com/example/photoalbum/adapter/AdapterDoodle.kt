@@ -14,8 +14,9 @@ import com.example.photoalbum.databinding.ItemDoodleImageBinding
 import com.example.photoalbum.util.DoodleDiffCallBack
 import com.google.android.material.button.MaterialButton
 
-class AdapterDoodle(val itemLongClick: (index: Int) -> Unit,
-                    val itemClick: (index: Int) -> Unit) : ListAdapter<ImageData, AdapterDoodle.MyViewHolder>(DoodleDiffCallBack) {
+class AdapterDoodle(
+    private val itemLongClick: (index: Int) -> Unit,
+    private val itemClick: (index: Int) -> Unit) : ListAdapter<ImageData, AdapterDoodle.MyViewHolder>(DoodleDiffCallBack) {
 
     class MyViewHolder(val binding: ItemDoodleImageBinding) :
         RecyclerView.ViewHolder(binding.root) {

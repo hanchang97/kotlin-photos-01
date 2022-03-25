@@ -1,13 +1,17 @@
 package com.example.photoalbum
 
+import android.content.Context
+import android.os.Environment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import com.example.photoalbum.data.ImageData
 import com.example.photoalbum.model.ShowImageRepositoryRemoteImpl
 import kotlinx.coroutines.launch
 import org.json.JSONArray
+import java.io.*
 
 class ShowImageViewModel: ViewModel() {
 
@@ -39,8 +43,8 @@ class ShowImageViewModel: ViewModel() {
                     jsonObject.getString("title"),
                     jsonObject.getString("image"),
                     jsonObject.getString("date"),
-                    false,
-                    false
+                    selected = false,
+                    checkBoxVisible = false
                 )
             )
         }
@@ -59,5 +63,37 @@ class ShowImageViewModel: ViewModel() {
     fun changeCheckedState(checkedInx: Int){
         imageList[checkedInx].selected = !imageList[checkedInx].selected
         _imageDataList.value = imageList
+    }
+
+    fun selectImageLoad(context: Context): List<File> {
+        val fileList = mutableListOf<File>()
+        val manager = Glide.with(context)
+        imageList.forEach {
+            if(it.selected) {
+                val file = manager.downloadOnly().load(it.image).submit().get()
+                fileList.add(file)
+            }
+        }
+        return fileList
+    }
+
+    fun saveImage(file: File) {
+        var localFile = File(Environment.getExternalStoragePublicDirectory(file.path).path)
+        if (!localFile.exists()) {
+            localFile.mkdirs()
+        }
+        val filePath = Environment.getExternalStoragePublicDirectory(file.path).path + System.currentTimeMillis() + ".jpeg"
+        localFile = File(filePath)
+
+        try {
+            val fileInputStream = FileInputStream(file)
+            val bufferedInputStream = BufferedInputStream(fileInputStream)
+            val byteArrayOutputStream = ByteArryayOutputStream()
+
+            val imageByte = ByteArray(1024)
+            var current = 0
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
     }
 }

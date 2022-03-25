@@ -70,10 +70,10 @@ class ShowImageActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.navi_download -> {
                     Log.d("AppTest", "download icon clicked")
-
+                    val loadImageList = selectImageLoad()
+                    saveImage(loadImageList)
                     true
                 }
-
                 else -> false
             }
         }

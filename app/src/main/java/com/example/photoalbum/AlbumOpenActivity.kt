@@ -115,8 +115,8 @@ class AlbumOpenActivity : AppCompatActivity() {
 
         while(cursor!!.moveToNext()){
             Log.d("AppTest", "cursor")
-            var absolutePathOfImage = cursor.getString(columnIndex!!)
-            var nameOfFile = cursor.getString(columnDisplayName!!)
+            val absolutePathOfImage = cursor.getString(columnIndex!!)
+            val nameOfFile = cursor.getString(columnDisplayName!!)
 
             lastIndex = absolutePathOfImage.lastIndexOf(nameOfFile)
             if(lastIndex >= 0)
@@ -132,13 +132,13 @@ class AlbumOpenActivity : AppCompatActivity() {
         return fileList
     }
 
-    private fun uriToBitmap(image: String) : Bitmap {
-        return BitmapFactory.decodeFile(image)
-    }
-
-    private fun bitmapToByte(bitmap : Bitmap) : ByteArray {
-        val stream = ByteArrayOutputStream()
-        bitmap.compress( Bitmap.CompressFormat.JPEG, 100, stream)
-        return stream.toByteArray()
-    }
+//    private fun uriToBitmap(image: String) : Bitmap {
+//        return BitmapFactory.decodeFile(image)
+//    }
+//
+//    private fun bitmapToByte(bitmap : Bitmap) : ByteArray {
+//        val stream = ByteArrayOutputStream()
+//        bitmap.compress( Bitmap.CompressFormat.JPEG, 100, stream)
+//        return stream.toByteArray()
+//    }
 }
