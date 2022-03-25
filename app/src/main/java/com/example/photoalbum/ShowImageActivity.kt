@@ -2,7 +2,10 @@ package com.example.photoalbum
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaScannerConnection
 import android.os.Bundle
+import android.provider.MediaStore
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
@@ -28,6 +31,7 @@ class ShowImageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowImageBinding
     private lateinit var adapterShowImage: AdapterShowImage
     private lateinit var adapterDoodle: AdapterDoodle
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,14 +68,22 @@ class ShowImageActivity : AppCompatActivity() {
             Log.d("AppTest", "setNavigationOnClickListener")
             turnOffDoodleView()
             turnOnPhotoView()
+            setImageView()
         }
 
-        binding.doodleToolBar.setOnMenuItemClickListener {
-            when (it.itemId) {
+        binding.doodleToolBar.setOnMenuItemClickListener { menu ->
+            when (menu.itemId) {
                 R.id.navi_download -> {
-                    Log.d("AppTest", "download icon clicked")
-                    val loadImageList = selectImageLoad()
-                    saveImage(loadImageList)
+                    val context = this
+                    CoroutineScope(Job() + Dispatchers.Default).launch {
+                        Log.d("AppTest", "download icon clicked")
+                        val loadImageList = viewModel.selectImageLoad(context)
+                        Log.d("SaveTest", "next selectImageLoad")
+                        loadImageList.forEach { image ->
+                            Log.d("SaveTest", "loadImageList ${image.name}")
+                            viewModel.saveImage(context, image)
+                        }
+                    }
                     true
                 }
                 else -> false
@@ -94,14 +106,14 @@ class ShowImageActivity : AppCompatActivity() {
     }
 
     private fun setImageView() {
-        val imageList = intent.getSerializableExtra("imageList") as ArrayList<*>
+        val imageList = imagesLoad()
         val showImageList = mutableListOf<ShowImage>()
         for (i in 0 until imageList.size) {
             val bitmap = uriToBitmap(imageList[i] as String)
             bitmap.scale(100, 100)
             val showImage = ShowImage(i, bitmap)
             showImageList.add(showImage)
-            Log.d("AppTest", "${imageList[i]}")
+            Log.d("AppTest", imageList[i])
         }
         adapterShowImage.submitList(showImageList)
     }
@@ -129,5 +141,35 @@ class ShowImageActivity : AppCompatActivity() {
     private fun turnOnPhotoView() {
         binding.rvShowImage.visibility = View.VISIBLE
         binding.toolBar.visibility = View.VISIBLE
+    }
+
+    private fun imagesLoad() : ArrayList<String> {
+        val fileList = ArrayList<String>()
+        val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME)
+
+        val cursor = contentResolver.query(uri, projection, null, null, MediaStore.MediaColumns.DATE_ADDED + " desc")
+
+        val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+        val columnDisplayName = cursor?.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
+        var lastIndex = 0
+
+        while(cursor!!.moveToNext()){
+            Log.d("AppTest", "cursor")
+            val absolutePathOfImage = cursor.getString(columnIndex!!)
+            val nameOfFile = cursor.getString(columnDisplayName!!)
+
+            lastIndex = absolutePathOfImage.lastIndexOf(nameOfFile)
+            if(lastIndex >= 0)
+            else lastIndex = nameOfFile.length - 1
+
+            if(!TextUtils.isEmpty(absolutePathOfImage)){
+                fileList.add(absolutePathOfImage)
+                Log.d("AppTest", "isEmpty")
+            }
+        }
+
+        Log.d("AppTest", "image List : ${fileList}")
+        return fileList
     }
 }
