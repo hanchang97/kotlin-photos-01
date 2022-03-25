@@ -48,14 +48,16 @@ class ShowImageViewModel: ViewModel() {
     }
 
     fun updateCheck(selectedInx: Int){
-        var tempImageList = arrayListOf<ImageData>()
-
-        for(i in 0 until imageList.size){
-            imageList[i].checkBoxVisible = true
-            if(i == selectedInx) imageList[i].selected = true
-            tempImageList.add(imageList[i])
+        imageList.forEach {
+            it.checkBoxVisible = true
         }
+        imageList[selectedInx].selected = true
 
-        _imageDataList.value = tempImageList
+        _imageDataList.value = imageList
+    }
+
+    fun changeCheckedState(checkedInx: Int){
+        imageList[checkedInx].selected = !imageList[checkedInx].selected
+        _imageDataList.value = imageList
     }
 }
