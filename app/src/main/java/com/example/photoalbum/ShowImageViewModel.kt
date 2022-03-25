@@ -1,6 +1,7 @@
 package com.example.photoalbum
 
 import android.content.Context
+import android.content.Intent
 import android.os.Environment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -88,12 +89,35 @@ class ShowImageViewModel: ViewModel() {
         try {
             val fileInputStream = FileInputStream(file)
             val bufferedInputStream = BufferedInputStream(fileInputStream)
-            val byteArrayOutputStream = ByteArryayOutputStream()
+            val byteArrayOutputStream = ByteArrayOutputStream()
 
             val imageByte = ByteArray(1024)
             var current = 0
+
+            while(true){
+                current = bufferedInputStream.read()
+                if(current != -1){
+                    byteArrayOutputStream.write(current)
+                }
+                else break
+            }
+
+            var fileOutputStream = FileOutputStream(localFile)
+            fileOutputStream.write(byteArrayOutputStream.toByteArray())
+
+            fileOutputStream.flush()
+
+            fileOutputStream.close()
+            fileInputStream.close()
+
+            scanMedia()
         } catch (e : Exception) {
             e.printStackTrace()
         }
+
+    }
+
+    fun scanMedia(file: File){
+        val intent = Intent(Intent.)
     }
 }
