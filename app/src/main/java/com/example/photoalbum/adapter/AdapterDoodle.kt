@@ -63,7 +63,7 @@ class AdapterDoodle(val itemLongClick: (index: Int) -> Unit,
     }
 
     fun update(){
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0, itemCount)
     }
 
 }
