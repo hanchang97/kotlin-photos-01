@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaScannerConnection
 import android.net.Uri
-
 import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -132,9 +131,15 @@ class ShowImageViewModel: ViewModel() {
 //            val mediaScannerConnection = MediaScannerConnection(context, mediaScannerConnectionClient)
 //            mediaScannerConnection.connect()
             scanMedia(context, localFile)
+
         } catch (e : Exception) {
             e.printStackTrace()
         }
+
+    }
+
+    fun scanMedia(file: File){
+        val intent = Intent(Intent.)
     }
 
     fun scanMedia(context: Context, file: File) {
